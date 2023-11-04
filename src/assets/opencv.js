@@ -1,4 +1,4 @@
-import { _wasm } from './wasm'
+import { loadWasm } from "./wasm-loader.js";
 
 export const cv = (() => {
   const cv = {}
@@ -344,7 +344,7 @@ export const cv = (() => {
       receiveInstance(result.instance)
     }
     function instantiateArrayBuffer(receiver) {
-      return WebAssembly.instantiate(intArrayFromBase64(_wasm), info).then(receiver, (reason) => {
+      return loadWasm().then(buf => WebAssembly.instantiate(buf, info)).then(receiver, (reason) => {
         err(`failed to asynchronously prepare wasm: ${reason}`)
         abort(reason)
       })

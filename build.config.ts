@@ -1,6 +1,22 @@
 import { defineBuildConfig } from 'unbuild'
 import type { Plugin } from 'vite'
 import { transform } from 'esbuild'
+import fs from "node:fs";
+import path from "node:path";
+
+function copyFile(from: string, to: string, overwrite = false) {
+  return {
+    name: 'copy-files',
+    generateBundle() {
+      const log = (msg: string) => console.log('\x1b[36m%s\x1b[0m', msg)
+      log(`copy file: ${from} → ${to}`)
+      fs.copyFileSync(
+        path.resolve(from),
+        path.resolve(to)
+      )
+    }
+  }
+}
 
 export default defineBuildConfig({
   entries: [
@@ -17,22 +33,7 @@ export default defineBuildConfig({
     'rollup:options': function (ctx, options) {
       options.plugins ||= []
       // @ts-expect-error force
-      options.plugins.push(<Plugin>{
-        name: 'wasm-minify',
-        async renderChunk(code, chunk) {
-          if (chunk.name === 'wasm' && !chunk.fileName.endsWith('.d.ts')) {
-            const result = await transform(code, {
-              minify: true,
-              target: 'es6',
-              minifyIdentifiers: true,
-            })
-            return {
-              code: result.code,
-              map: result.map,
-            }
-          }
-        },
-      })
+      options.plugins.push(copyFile('./src/assets/opencv.wasm', './dist/opencv.wasm'))
     },
   },
 })

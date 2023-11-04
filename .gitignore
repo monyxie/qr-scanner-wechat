@@ -10,3 +10,4 @@ logs
 node_modules
 temp
 src/assets/models.ts
+/src/assets/opencv.wasm

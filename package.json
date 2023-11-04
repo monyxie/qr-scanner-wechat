@@ -39,7 +39,7 @@
     "build": "unbuild",
     "dev": "unbuild --stub",
     "lint": "eslint .",
-    "prepare": "esno scripts/bundle-models.ts",
+    "prepare": "esno scripts/bundle-models.ts && esno scripts/extract-wasm.ts",
     "prepublishOnly": "nr build",
     "release": "bumpp && npm publish",
     "start": "esno src/index.ts",
